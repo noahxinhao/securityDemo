@@ -1,0 +1,16 @@
+bin/
+target/
+.settings/
+.classpath
+*.project
+.idea/
+*.iml
+*.classpath
+*.html
+bower.json
+Gruntfile.js
+karma.conf.js
+package.json
+.grunt/
+bower_components/
+node_modules/

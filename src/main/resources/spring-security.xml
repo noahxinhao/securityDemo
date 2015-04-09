@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security.xsd">
+    <!-- auto-config="true"就会启用匿名登录功能 -->
+    <!-- access-denied-page为验证失败跳转页面 -->
+    <!-- servlet-api-provision="false" 关闭保存登录之前的请求 -->
+    <!-- 不要过滤图片等静态资源 -->
+    <http pattern="/**/*.jpg*" security="none" />
+    <http pattern="/**/*.png*" security="none" />
+    <http pattern="/**/*.gif*" security="none" />
+    <http pattern="/**/*.css*" security="none" />
+    <http pattern="/**/*.js*" security="none" />
+    <http pattern="/**/*.less*" security="none" />
+    <http pattern="/**/*.svg*" security="none" />
+    <http pattern="/**/*.ico*" security="none" />
+    <http pattern="/**/*.mno*" security="none" />
+    <http pattern="/**/*.eot*" security="none" />
+    <http pattern="/**/*.ttf*" security="none" />
+    <http pattern="/**/*.woff*" security="none" />
+    <http pattern="/components/**" security="none" />
+
+    <http auto-config="true" servlet-api-provision="false"
+          access-denied-page="/rs/denied" use-expressions="true">
+
+        <intercept-url pattern="/rs/login" access="permitAll" />
+        <intercept-url pattern="/rs/main/admin" access="hasRole('ROLE_ADMIN')" />
+        <intercept-url pattern="/rs/main/common" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')" />
+
+        <logout invalidate-session="true"
+                logout-success-url="/rs/login"
+                logout-url="/j_spring_security_logout"/>
+
+        <!--<session-management session-fixation-protection="none" invalid-session-url="/signin.html">
+            <concurrency-control max-sessions="1" expired-url="/signin.html" />
+        </session-management>-->
+        <!-- 设置admin 只有 https 才能访问 可以指定端口 默认80/443 8080/8443 -->
+        <!-- <intercept-url pattern="/admin.jsp" access="ROLE_ADMIN" -->
+        <!-- requires-channel="https" /> -->
+        <!-- <port-mappings> -->
+        <!-- <port-mapping http="9000" https="9443" /> -->
+        <!-- </port-mappings> -->
+        <!-- 提交许可协议的才能访问 -->
+
+        <!-- 配置执行登录的页面 以及成功和失败页面 -->
+        <form-login login-page="/rs/login"
+                    authentication-failure-url="/rs/login?m=error"
+                    default-target-url="/rs/main/common"
+                    always-use-default-target="false" />
+        <!-- 配置使用数据库完成 记住我 功能 -->
+        <remember-me key="vps-B1jSfiUzLHxW44AgIBhsAASuCFstQmEY43BFAUIpe" token-validity-seconds="604800"/>
+        <!-- 为匿名用户设置名称 -->
+        <anonymous username="Guest" />
+        <!-- 取消使用session伪造攻击 登录时销毁用户的当前session，然后为用户创建一个新session，并将原有session中的所有属性都复制到新session中 -->
+        <!-- <session-management session-fixation-protection="none" /> -->
+        <!-- 切换用户 -->
+        <custom-filter position="SWITCH_USER_FILTER" ref="switchUserProcessingFilter"/>
+        <!--<custom-filter after="REMEMBER_ME_FILTER" ref="checkUserFilter"/>-->
+        <session-management session-fixation-protection="none" invalid-session-url="/rs/login"/>
+    </http>
+
+    <authentication-manager>
+        <authentication-provider user-service-ref="customUserAuthService">
+            <password-encoder ref="passwordEncoder">
+                <salt-source user-property="username" />
+            </password-encoder>
+        </authentication-provider>
+    </authentication-manager>
+
+    <beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+    <beans:bean id="customUserAuthService" class="com.juxinli.oa.webroot.User_Auth" />
+
+    <beans:bean id="switchUserProcessingFilter"
+                class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter"
+                autowire="byType">
+        <beans:property name="targetUrl" value="/index" />
+    </beans:bean>
+</beans:beans>
