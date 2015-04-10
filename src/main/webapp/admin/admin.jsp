@@ -15,7 +15,8 @@
 <jsp:include page="../nav.jsp"/>
 <div class="container">
     <div class="row">
-        <a href="/rs/main/common">用户主页</a>
+        这个页面只有管理员课件，普通用户将会被拒绝访问该页面
+        <a href="/rs/main/common">进入普通用户主页</a>
     </div>
 </div>
 </div>

@@ -15,7 +15,7 @@
 <jsp:include page="nav.jsp"/>
 <div class="container">
     <div class="row">
-        访问拒绝
+        普通用户试图访问没有权限的页面，访问被拒绝
     </div>
 </div>
 </div>

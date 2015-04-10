@@ -54,19 +54,23 @@
         <!-- 配置使用数据库完成 记住我 功能 -->
         <remember-me key="vps-B1jSfiUzLHxW44AgIBhsAASuCFstQmEY43BFAUIpe" token-validity-seconds="604800"/>
         <!-- 为匿名用户设置名称 -->
-        <anonymous username="Guest" />
+        <anonymous username="游客" />
         <!-- 取消使用session伪造攻击 登录时销毁用户的当前session，然后为用户创建一个新session，并将原有session中的所有属性都复制到新session中 -->
         <!-- <session-management session-fixation-protection="none" /> -->
         <!-- 切换用户 -->
         <custom-filter position="SWITCH_USER_FILTER" ref="switchUserProcessingFilter"/>
         <!--<custom-filter after="REMEMBER_ME_FILTER" ref="checkUserFilter"/>-->
-        <session-management session-fixation-protection="none" invalid-session-url="/rs/login"/>
+        <session-management session-fixation-protection="none" invalid-session-url="/rs/login">
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="false" expired-url="/rs/login" />
+        </session-management>
+
     </http>
 
+    <!--自定义权限认证器-->
     <authentication-manager>
         <authentication-provider user-service-ref="customUserAuthService">
             <password-encoder ref="passwordEncoder">
-                <salt-source user-property="username" />
+                <salt-source user-property="username"/>
             </password-encoder>
         </authentication-provider>
     </authentication-manager>

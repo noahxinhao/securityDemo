@@ -18,9 +18,11 @@
   <div class="row">
     <div class="col-xs-4">
       <sec:authorize access="hasRole('ROLE_USER')">
-        This content will only be visible to users who have
-        the "supervisor" authority in their list of GrantedAuthoritys.
+          common页面普通用户是可见的
       </sec:authorize>
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
+            common页面管理员也是可见的，但是这部分数据只有管理员能看见。
+        </sec:authorize>
     </div>
     <a href="/rs/main/admin">管理员主页</a>
   </div>
